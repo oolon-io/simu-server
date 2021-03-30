@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.oolon.simu.server.wepay.mapper.PayInfoMapper">
+	<insert id="savePayInfo"
+		parameterType="io.oolon.simu.server.wepay.bean.PayInfo">
+		INSERT INTO payinfo (
+		appid,
+		mchid,
+		description,
+		out_trade_no,
+		time_expire,
+		notify_url,
+		total,
+		openid,
+		prepay_id,
+		trade_state,
+		trade_type
+			)
+		VALUES
+	  ( #{appid},
+		#{mchid},
+		#{description},
+		#{out_trade_no},
+		#{time_expire},
+		#{notify_url},
+		#{total},
+		#{openid},
+		#{prepay_id},
+		#{trade_state},
+		#{trade_type}
+		)ON DUPLICATE KEY UPDATE
+		appid = VALUES(appid),
+		description = VALUES(description),
+		time_expire = VALUES(time_expire),
+		notify_url = VALUES(notify_url),
+		prepay_id = VALUES(prepay_id),
+		trade_state = VALUES(trade_state),
+		trade_type = VALUES(trade_type)
+	</insert>
+	
+	<update id="updatePayInfoInPayed" parameterType="io.oolon.simu.server.wepay.bean.PayInfo">
+		UPDATE payinfo 
+		SET trade_state = #{trade_state},
+		    transaction_id = #{transaction_id},
+		    success_time = #{success_time},
+		    pay_notice_time = #{pay_notice_time}
+		WHERE
+			prepay_id = #{prepay_id}
+			AND appid = #{appid}
+	</update>
+	
+	
+	<update id="changePayNoticedFlag" parameterType="io.oolon.simu.server.wepay.bean.PayInfo">
+	UPDATE payinfo 
+	SET is_pay_noticed = 1
+	WHERE
+		mchid = #{mchid}
+		AND out_trade_no = #{out_trade_no}
+	</update>
+	
+	
+	<select id="queryPayInfo" parameterType="io.oolon.simu.server.wepay.bean.PayInfo" resultType="io.oolon.simu.server.wepay.bean.PayInfo">
+		SELECT
+			appid,
+			mchid,
+			description,
+			out_trade_no,
+			time_expire,
+			notify_url,
+			total,
+			openid,
+			prepay_id,
+			trade_state,
+			transaction_id,
+			trade_type,
+			success_time
+		FROM
+			payinfo 
+		<where>
+			<if test="mchid != null and mchid !=''">
+				AND mchid = #{mchid}
+			</if>
+			<if test="out_trade_no != null and out_trade_no !=''">
+				AND out_trade_no = #{out_trade_no}
+			</if>
+			<if test="prepay_id != null and prepay_id !=''">
+				AND prepay_id = #{prepay_id}
+			</if>
+			<if test="transaction_id != null and transaction_id !=''">
+				AND transaction_id = #{transaction_id}
+			</if>
+		</where>	
+	</select>
+	
+	<select id="queryNeedNoticeList" resultType="io.oolon.simu.server.wepay.bean.PayInfo">
+	   SELECT
+			appid,
+			mchid,
+			description,
+			out_trade_no,
+			time_expire,
+			notify_url,
+			total,
+			openid,
+			prepay_id,
+			trade_state,
+			transaction_id,
+			trade_type,
+			success_time
+		FROM
+			payinfo
+		WHERE pay_notice_time is not null AND pay_notice_time &lt;= now() AND is_pay_noticed != 1;
+	</select>
+	
+	
+</mapper>
