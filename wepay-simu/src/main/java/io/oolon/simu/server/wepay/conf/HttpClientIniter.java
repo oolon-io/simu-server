@@ -12,10 +12,10 @@ import org.apache.http.client.config.RequestConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import squall.http.config.HttpProxySelector;
-import squall.http.config.PoolConfig;
-import squall.http.config.RequestConfigDelegater;
-import squall.http.utils.HttpClientUtil;
+import io.oolon.http.config.HttpProxySelector;
+import io.oolon.http.config.PoolConfig;
+import io.oolon.http.config.RequestConfigDelegater;
+import io.oolon.http.utils.HttpClientUtil;
 
 @Component
 public class HttpClientIniter {

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.oolon.simu.server.wepay.service.WebpayService;
+import io.oolon.simu.server.wepay.service.WepayService;
 import io.oolon.simu.server.wepay.util.WepaySignChecker;
 import io.oolon.util.JsonUtil;
 
@@ -28,7 +28,7 @@ public class WepaySimuController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WepaySimuController.class);
 
 	@Resource
-	private WebpayService webpayService;
+	private WepayService webpayService;
 
 	@Resource
 	private WepaySignChecker wepaySignChecker;
@@ -69,6 +69,25 @@ public class WepaySimuController {
 		wepaySignChecker.check(header);
         LOGGER.debug("payNotice recv {}",body);
 		Map<String, Object> responseMap = new HashMap<>();
+		ResponseEntity<String> rsp = new ResponseEntity<String>(JsonUtil.getJson(responseMap), null, HttpStatus.OK);
+		return rsp;
+
+	}
+	
+	@RequestMapping(value = "/v3/refund/domestic/refunds", method = { RequestMethod.POST })
+	public ResponseEntity<String> refundJSV3(@RequestHeader HttpHeaders header, @RequestBody String body) {
+		wepaySignChecker.check(header);
+		Map<String, Object> requestMap = JsonUtil.json2Map(body);
+		Map<String, Object> responseMap = webpayService.refund(requestMap);
+		ResponseEntity<String> rsp = new ResponseEntity<String>(JsonUtil.getJson(responseMap), null, HttpStatus.OK);
+		return rsp;
+
+	}
+	
+	@GetMapping("/v3/refund/domestic/refunds/{out_refund_no}")
+	public ResponseEntity<String> queryRefundJSV3(@RequestHeader HttpHeaders header,@PathVariable("out_refund_no") String out_refund_no) {
+		wepaySignChecker.check(header);
+		Map<String, Object> responseMap = webpayService.queryRefundJSV3(out_refund_no);
 		ResponseEntity<String> rsp = new ResponseEntity<String>(JsonUtil.getJson(responseMap), null, HttpStatus.OK);
 		return rsp;
 

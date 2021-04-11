@@ -54,9 +54,9 @@
 				<version>8.0.16</version>
 			</dependency>
 			<dependency>
-				<groupId>com.github.squallopen</groupId>
+				<groupId>io.oolon</groupId>
 				<artifactId>HttpUtil</artifactId>
-				<version>0.2.3</version>
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>

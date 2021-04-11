@@ -83,11 +83,14 @@
 			<if test="out_trade_no != null and out_trade_no !=''">
 				AND out_trade_no = #{out_trade_no}
 			</if>
+			<if test="transaction_id != null and transaction_id !=''">
+				AND transaction_id = #{transaction_id}
+			</if>
 			<if test="prepay_id != null and prepay_id !=''">
 				AND prepay_id = #{prepay_id}
 			</if>
-			<if test="transaction_id != null and transaction_id !=''">
-				AND transaction_id = #{transaction_id}
+			<if test="trade_state != null and trade_state !=''">
+				AND trade_state = #{trade_state}
 			</if>
 		</where>	
 	</select>

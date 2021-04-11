@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.oolon.simu.server.wepay.mapper.RefundInfoMapper">
+	<insert id="saveRefundInfo"
+		parameterType="io.oolon.simu.server.wepay.bean.RefundInfo">
+		INSERT INTO REFUNDINFO(
+			out_refund_no,
+			refund_id,
+			transaction_id,
+			out_trade_no,
+			notify_url,
+			refund,
+			total,
+			currency,
+			create_time,
+			status,
+			refund_notice_time,
+			is_pay_noticed) 
+			VALUES (
+			#{out_refund_no},
+			#{refund_id},
+			#{transaction_id},
+			#{out_trade_no},
+			#{notify_url},
+			#{refund},
+			#{total},
+			#{currency},
+			#{create_time},
+			#{status},
+			#{refund_notice_time},
+			#{is_pay_noticed}
+			)
+	</insert>
+	<!-- 
+	<update id="updatePayInfoInPayed" parameterType="io.oolon.simu.server.wepay.bean.PayInfo">
+		UPDATE payinfo 
+		SET trade_state = #{trade_state},
+		    transaction_id = #{transaction_id},
+		    success_time = #{success_time},
+		    pay_notice_time = #{pay_notice_time}
+		WHERE
+			prepay_id = #{prepay_id}
+			AND appid = #{appid}
+	</update>-->
+	
+	
+	<update id="changeRefundNoticedFlag" parameterType="io.oolon.simu.server.wepay.bean.RefundInfo">
+	UPDATE refundinfo 
+	SET is_pay_noticed = 1
+	WHERE
+    out_refund_no = #{out_refund_no}
+	</update>
+	
+	
+	<select id="queryRefundInfo" parameterType="io.oolon.simu.server.wepay.bean.RefundInfo" resultType="io.oolon.simu.server.wepay.bean.RefundInfo">
+		SELECT
+			out_refund_no,
+			refund_id,
+			transaction_id,
+			out_trade_no,
+			notify_url,
+			refund,
+			total,
+			currency,
+			create_time,
+			status,
+			refund_notice_time,
+			is_pay_noticed
+		FROM
+			refundinfo 
+		<where>
+			<if test="out_trade_no != null and out_trade_no !=''">
+				AND out_trade_no = #{out_trade_no}
+			</if>
+			<if test="transaction_id != null and transaction_id !=''">
+				AND transaction_id = #{transaction_id}
+			</if>
+			<if test="out_refund_no != null and out_refund_no !=''">
+				AND out_refund_no = #{out_refund_no}
+			</if>
+		</where>	
+	</select>
+	
+
+	<select id="queryNeedNoticeList" resultType="io.oolon.simu.server.wepay.bean.RefundInfo">
+	   SELECT
+			out_refund_no,
+			refund_id,
+			transaction_id,
+			out_trade_no,
+			notify_url,
+			refund,
+			total,
+			currency,
+			create_time,
+			status,
+			refund_notice_time,
+			is_pay_noticed
+		FROM
+			refundinfo
+		WHERE refund_notice_time is not null AND refund_notice_time &lt;= now() AND is_pay_noticed != 1;
+	</select>
+	
+	
+</mapper>

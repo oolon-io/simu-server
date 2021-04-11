@@ -11,8 +11,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import io.oolon.simu.server.wepay.bean.PayInfo;
+import io.oolon.simu.server.wepay.bean.RefundInfo;
 import io.oolon.simu.server.wepay.mapper.PayInfoMapper;
-import io.oolon.simu.server.wepay.service.WebpayService;
+import io.oolon.simu.server.wepay.mapper.RefundInfoMapper;
+import io.oolon.simu.server.wepay.service.WepayService;
 
 @Component
 @EnableScheduling
@@ -21,9 +23,11 @@ public class NoticeTask {
 	    
 	    @Resource
 	    private PayInfoMapper payInfoMapper;
+	    @Resource
+	    private RefundInfoMapper refundInfoMapper;
 	    
 	    @Resource
-	    private WebpayService webpayService;
+	    private WepayService webpayService;
 	    
 	    @Scheduled(fixedDelay = 10000)
 		public void payNoticeTask() {
@@ -38,6 +42,21 @@ public class NoticeTask {
 				}
 			}
 			LOGGER.info("支付成功推送结束....");
+		}
+	    
+	    @Scheduled(fixedDelay = 10000)
+		public void refundNoticeTask() {
+			LOGGER.info("退款成功推送....");
+			
+			List<RefundInfo> todoList  = refundInfoMapper.queryNeedNoticeList();
+			
+			if(todoList != null && todoList.size() > 0) {
+				LOGGER.info(" {} 条退款成功推送记录需要处理",todoList.size());
+				for(RefundInfo refundInfo : todoList) {
+					webpayService.noticeOneRefund(refundInfo);
+				}
+			}
+			LOGGER.info("退款成功推送结束....");
 		}
 
 }
