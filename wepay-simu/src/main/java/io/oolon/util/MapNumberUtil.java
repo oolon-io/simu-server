@@ -34,7 +34,12 @@ public class MapNumberUtil {
 			if (obj instanceof Byte || obj instanceof Short || obj instanceof Integer) {
 				returnInteger = ((Number) obj).intValue();
 			} else {
-				throw new RuntimeException("mapElement2Long error " + key + " 精度损失");
+				if(((Long)obj).longValue() <= Integer.MAX_VALUE)
+				{
+					returnInteger = ((Number) obj).intValue();
+				}else {
+				    throw new RuntimeException("mapElement2Long error " + key + " 精度损失");
+				}
 			}
 		} else if (obj instanceof String) {
 			returnInteger = Integer.valueOf(obj.toString());
