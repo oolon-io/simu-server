@@ -7,6 +7,6 @@
 需要使用mysql作为数据库,建表语句在simu-server\wepay-simu\src\main\resources\mysql-script目录下
 前端模拟提交支付请求需要调用 /v3/pay/transactions/jsapi/payed 接口
 报文为json
-{"appid":"wxfdb74947029fb4c9","timeStamp":"1414561699","nonceStr":"dadadada","package":"prepay_id=3769b0de6d4d4cc8b54c367b3ff1a15a","signType":"RSA","paySign":"aaa"}
+{"appid":"wxaaa749c7029fb4c9","timeStamp":"1414561699","nonceStr":"dadadada","package":"prepay_id=3769b0de6d4d4cc8b54c367b3ff1a15a","signType":"RSA","paySign":"aaa"}
 
 package中的prepay_id为模拟器返回的数据
